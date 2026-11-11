@@ -1,0 +1,26 @@
+<p class="kicker rise">Step 3 of 3</p>
+<h1 class="rise d1">Verification</h1>
+<div class="acct rise d2"><img id="avatar" alt="" width="48" height="48" hidden><div><strong id="name">Loading…</strong><span id="handle"></span></div><button class="btn ghost sm" id="out" hidden>Log out</button></div>
+<div class="prog" aria-hidden="true"><i id="bar"></i></div>
+<div id="stage" class="stage" aria-live="polite"><p><span class="spin"></span> Checking your record…</p></div>
+
+<template id="t-pending">
+<h2>Confirm to finish</h2>
+<ul class="mini"><li class="done">Logged in with Discord</li><li class="done">Member of the server confirmed</li><li class="now">Accept the rules</li></ul>
+<label class="check"><input type="checkbox" id="ok"><span>I have read and accept the server rules, the <a href="/terms">Terms</a> and the <a href="/privacy">Privacy Policy</a>.</span></label>
+<button class="btn" id="go" disabled>Verify me</button>
+</template>
+
+<template id="t-verified">
+<svg class="mark ok" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M14 27l8 8 16-17"/></svg>
+<h2>You're verified.</h2>
+<p>Recorded on <time id="when"></time>. You can close this page.</p>
+<a class="btn" id="back" target="_blank" rel="noopener">Return to Discord</a>
+</template>
+
+<template id="t-failed">
+<svg class="mark bad" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M18 18l16 16M34 18L18 34"/></svg>
+<h2>Not verified</h2>
+<p id="why"></p>
+<button class="btn ghost" id="retry">Try again</button> <a class="btn ghost" href="/support">Support</a>
+</template>

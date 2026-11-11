@@ -1,0 +1,110 @@
+/* FILE #7 — Tampilan + animasi. Tema: ruang hitam, satu warna aksen (emas). */
+:root{--fg:#f3f3f1;--dim:#a8a8a0;--line:#ffffff26;--acc:#ffc857;--bad:#ff7a7a;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;--t:0s;color-scheme:dark}
+@media(prefers-reduced-motion:no-preference){@view-transition{navigation:auto}}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+html{background:#000;color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;scroll-behavior:smooth}
+body{min-height:100svh;display:flex;flex-direction:column;overflow-x:hidden}
+a{color:var(--acc);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+.skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;z-index:9;background:#000;padding:8px 12px}
+h1,h2{font-family:var(--serif);font-weight:400;line-height:1.1}
+h1{font-size:clamp(2.1rem,6.5vw,4rem);margin:.4rem 0 1.2rem}
+h2{font-size:clamp(1.35rem,3.4vw,1.9rem);margin:2.4rem 0 .8rem}
+em{color:var(--acc)}
+p,li,dd{color:var(--dim)}p{margin-bottom:1rem}strong{color:var(--fg);font-weight:600}code{font:.85em var(--mono);color:var(--fg)}
+.lead{font-size:1.15rem;max-width:54ch;color:var(--fg)}.small{font-size:.85rem}
+.kicker{font:500 .75rem var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--acc)}
+
+/* ruang angkasa: 3 lapis bintang statis yang melayang pelan + bintang berkelip + bintang jatuh */
+.sky{position:fixed;inset:0;z-index:-1;overflow:hidden;background:#000}
+.l{position:absolute;left:calc(var(--s)*-1);top:calc(var(--s)*-1);width:calc(100% + var(--s)*3);height:calc(100% + var(--s)*3);background-size:var(--s) var(--s);will-change:transform;animation:drift var(--d) linear infinite;animation-delay:var(--t)}
+@keyframes drift{to{transform:translate3d(calc(var(--s)*-1),calc(var(--s)*-1),0)}}
+.sky i{position:absolute;width:var(--z);height:var(--z);border-radius:50%;background:#fff;opacity:.15;animation:tw var(--d) ease-in-out infinite;animation-delay:calc(var(--o) + var(--t))}
+@keyframes tw{50%{opacity:.95}}
+.shoot{position:absolute;width:110px;height:1.5px;background:linear-gradient(90deg,#0000,#fff);opacity:0;animation:shoot var(--d) linear infinite;animation-delay:calc(var(--o) + var(--t))}
+@keyframes shoot{0%{opacity:0;transform:rotate(32deg) translateX(0)}2%{opacity:1}11%,100%{opacity:0;transform:rotate(32deg) translateX(520px)}}
+body[data-page=home]::after{content:"";position:fixed;z-index:-1;left:50%;bottom:-88vw;width:112vw;height:112vw;translate:-50% 0;border-radius:50%;background:#000;box-shadow:0 -1px 0 #ffffff59,0 -40px 100px -50px #ffc85755;pointer-events:none}
+
+/* navigasi */
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:14px clamp(18px,4vw,48px);background:linear-gradient(#000,#0000)}
+.brand{font:700 .9rem var(--mono);letter-spacing:.3em;color:var(--fg);text-decoration:none}
+nav{display:flex;align-items:center;gap:clamp(16px,3vw,32px)}
+nav a:not(.btn){position:relative;padding:6px 0;color:var(--dim);text-decoration:none;transition:color .2s}
+nav a:not(.btn)::after{content:"";position:absolute;inset:auto 0 0;height:1px;background:var(--acc);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+nav a:not(.btn):hover,nav a[aria-current]{color:var(--fg)}
+nav a:not(.btn):hover::after{transform:scaleX(1)}
+nav a[aria-current]::after{transform:scaleX(1);animation:grow .6s .15s both}
+@keyframes grow{from{transform:scaleX(0)}}
+.burger{display:none;background:none;border:0;width:44px;height:44px;cursor:pointer;position:relative;z-index:7}
+.burger span{position:absolute;left:11px;right:11px;height:1.5px;background:var(--fg);transition:transform .3s,top .3s}
+.burger span:first-child{top:18px}.burger span:last-child{top:25px}
+.burger[aria-expanded=true] span:first-child{top:21px;transform:rotate(45deg)}
+.burger[aria-expanded=true] span:last-child{top:21px;transform:rotate(-45deg)}
+@media(max-width:720px){.burger{display:block}
+nav{position:fixed;inset:0;z-index:6;flex-direction:column;justify-content:center;gap:28px;font-size:1.5rem;background:#000f;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+nav.open{opacity:1;visibility:visible}}
+
+/* tombol */
+.btn{display:inline-flex;align-items:center;gap:.6em;padding:.8em 1.5em;border:1px solid var(--acc);border-radius:2px;background:var(--acc);color:#000;font:600 .82rem var(--mono);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:box-shadow .25s,transform .12s,border-color .2s,color .2s}
+.btn:hover{box-shadow:0 0 28px #ffc85766}.btn:active{transform:scale(.96)}
+.btn.ghost{background:none;color:var(--fg);border-color:var(--line)}.btn.ghost:hover{border-color:var(--acc);color:var(--acc)}
+.btn.sm{padding:.5em 1em}
+.btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none;transform:none}.btn.busy:disabled{opacity:.8}
+.busy::after,.spin{content:"";display:inline-block;width:1em;height:1em;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{rotate:360deg}}
+
+/* tata letak */
+main{flex:1;width:min(1080px,100%);margin:0 auto;padding:clamp(24px,6vw,72px) clamp(18px,4vw,48px)}
+.hero{min-height:58vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.row{display:flex;flex-wrap:wrap;gap:12px;margin-top:1.4rem}
+.rise{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+.rv{opacity:0;transform:translateY(18px);transition:opacity .7s,transform .7s}.rv.in{opacity:1;transform:none}
+.narrow{max-width:560px}
+.steps{list-style:none;counter-reset:s;border-left:1px solid var(--line);margin:1.4rem 0 0 .6rem}
+.steps li{counter-increment:s;position:relative;padding:0 0 1.8rem 2rem}
+.steps li::before{content:counter(s,decimal-leading-zero);position:absolute;left:-1.05rem;top:0;background:#000;padding:2px 0;font:500 .75rem var(--mono);color:var(--acc)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,5vw,64px);margin-top:2rem}
+.def{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:clamp(12px,4vw,48px);border-top:1px solid var(--line);padding-top:.5rem}
+.def h2{margin-top:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:2rem}
+.card{border:1px solid var(--line);padding:1.4rem;transition:transform .25s,border-color .25s,box-shadow .25s}
+.card:hover{transform:translateY(-4px) scale(1.01);border-color:var(--acc);box-shadow:0 14px 40px #ffc8571a}
+.card h2{margin-top:0}
+.cta{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--line)}
+@media(max-width:720px){.split,.def{grid-template-columns:1fr}}
+
+/* login + verifikasi */
+.alert{border-left:2px solid var(--bad);padding:.6rem 1rem;color:var(--fg);background:#ff7a7a14;margin-bottom:1.4rem}
+.perm{margin:1.4rem 0;border-top:1px solid var(--line)}.perm dt{font:600 .8rem var(--mono);color:var(--acc);padding-top:.9rem}.perm dd{padding-bottom:.9rem;border-bottom:1px solid var(--line)}
+.acct{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.acct img{width:48px;height:48px;border-radius:50%}.acct div{flex:1;min-width:0}.acct span{display:block;color:var(--dim);font:.8rem var(--mono)}
+.prog{height:2px;background:var(--line);margin-bottom:2rem}
+.prog i{display:block;height:100%;width:var(--p,15%);background:var(--acc);box-shadow:0 0 12px var(--acc);transition:width .7s cubic-bezier(.2,.7,.2,1)}
+.stage{min-height:260px;max-width:560px}
+.mini{list-style:none;margin:1rem 0}.mini li{padding:.2rem 0 .2rem 1.6rem;position:relative}
+.mini li::before{content:"○";position:absolute;left:0}.mini .done{color:var(--fg)}.mini .done::before{content:"✓";color:var(--acc)}.mini .now::before{content:"●";color:var(--acc);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.3}}
+.check{display:flex;gap:12px;align-items:flex-start;margin:1.2rem 0;cursor:pointer;color:var(--fg)}
+.check input{width:20px;height:20px;margin-top:3px;accent-color:var(--acc);flex:none}
+.mark{width:72px;height:72px;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:1rem}
+.mark circle{stroke-dasharray:152;stroke-dashoffset:152;animation:draw .7s ease forwards}
+.mark path{stroke-dasharray:50;stroke-dashoffset:50;animation:draw .5s .5s ease forwards}
+.ok{stroke:var(--acc)}.bad{stroke:var(--bad);animation:shake .5s .3s}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes shake{20%,60%{translate:-6px 0}40%,80%{translate:6px 0}}
+
+/* halaman hukum + tabel + footer */
+.prose{max-width:68ch;counter-reset:h}.prose h2{counter-increment:h;font-size:1.3rem}.prose h2::before{content:counter(h) ". ";color:var(--acc);font:.9rem var(--mono)}
+.prose ul{padding-left:1.2rem;margin-bottom:1rem}
+.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:520px;font-size:.92rem}
+th,td{text-align:left;padding:.6rem .8rem .6rem 0;border-bottom:1px solid var(--line);vertical-align:top;color:var(--dim)}
+th{font:600 .72rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--fg)}
+footer{display:flex;flex-wrap:wrap;gap:8px 24px;padding:24px clamp(18px,4vw,48px);border-top:1px solid var(--line);font:.8rem var(--mono);color:var(--dim)}
+footer a{color:var(--dim);text-decoration:none}footer a:hover{color:var(--acc)}footer span{margin-right:auto}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.shoot{display:none}.sky i{opacity:.6}.mark circle,.mark path{stroke-dashoffset:0!important}}
+.l1{--s:260px;--d:480s;background-image:radial-gradient(1px 1px at 86px 246px,#ffffff80,#0000),radial-gradient(1px 1px at 42px 105px,#ffffff80,#0000),radial-gradient(1px 1px at 170px 16px,#ffffff80,#0000),radial-gradient(1px 1px at 22px 214px,#ffffff80,#0000),radial-gradient(1px 1px at 141px 28px,#ffffff80,#0000),radial-gradient(1px 1px at 97px 153px,#ffffff80,#0000),radial-gradient(1px 1px at 18px 236px,#ffffff80,#0000),radial-gradient(1px 1px at 133px 58px,#ffffff80,#0000),radial-gradient(1px 1px at 13px 26px,#ffffff80,#0000),radial-gradient(1px 1px at 115px 111px,#ffffff80,#0000),radial-gradient(1px 1px at 21px 65px,#ffffff80,#0000),radial-gradient(1px 1px at 27px 145px,#ffffff80,#0000),radial-gradient(1px 1px at 112px 19px,#ffffff80,#0000),radial-gradient(1px 1px at 215px 148px,#ffffff80,#0000),radial-gradient(1px 1px at 35px 246px,#ffffff80,#0000),radial-gradient(1px 1px at 61px 165px,#ffffff80,#0000),radial-gradient(1px 1px at 164px 153px,#ffffff80,#0000),radial-gradient(1px 1px at 246px 19px,#ffffff80,#0000),radial-gradient(1px 1px at 151px 153px,#ffffff80,#0000),radial-gradient(1px 1px at 105px 16px,#ffffff80,#0000),radial-gradient(1px 1px at 253px 60px,#ffffff80,#0000),radial-gradient(1px 1px at 15px 146px,#ffffff80,#0000)}
+.l2{--s:340px;--d:360s;background-image:radial-gradient(1.2px 1.2px at 72px 152px,#ffffffcc,#0000),radial-gradient(1.2px 1.2px at 218px 77px,#ffffffcc,#0000),radial-gradient(1.2px 1.2px at 280px 64px,#ffffffcc,#0000),radial-gradient(1.2px 1.2px at 296px 161px,#ffffffcc,#0000),radial-gradient(1.2px 1.2px at 290px 96px,#ffffffcc,#0000),radial-gradient(1.2px 1.2px at 56px 301px,#ffffffcc,#0000),radial-gradient(1.2px 1.2px at 296px 331px,#ffffffcc,#0000),radial-gradient(1.2px 1.2px at 100px 194px,#ffffffcc,#0000),radial-gradient(1.2px 1.2px at 53px 284px,#ffffffcc,#0000),radial-gradient(1.2px 1.2px at 36px 292px,#ffffffcc,#0000),radial-gradient(1.2px 1.2px at 34px 320px,#ffffffcc,#0000),radial-gradient(1.2px 1.2px at 109px 258px,#ffffffcc,#0000),radial-gradient(1.2px 1.2px at 276px 222px,#ffffffcc,#0000),radial-gradient(1.2px 1.2px at 164px 242px,#ffffffcc,#0000)}
+.l3{--s:480px;--d:260s;background-image:radial-gradient(1.7px 1.7px at 303px 476px,#fff,#0000),radial-gradient(1.7px 1.7px at 236px 189px,#fff,#0000),radial-gradient(1.7px 1.7px at 157px 131px,#fff,#0000),radial-gradient(1.7px 1.7px at 410px 96px,#fff,#0000),radial-gradient(1.7px 1.7px at 361px 403px,#fff,#0000),radial-gradient(1.7px 1.7px at 128px 45px,#fff,#0000),radial-gradient(1.7px 1.7px at 298px 157px,#fff,#0000),radial-gradient(1.7px 1.7px at 272px 257px,#fff,#0000)}
